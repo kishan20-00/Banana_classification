@@ -25,7 +25,7 @@ export default function BananaClassificationScreen() {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
-      setResult(null); // Reset result when a new image is chosen
+      setResult(null);
     }
   };
 
@@ -45,6 +45,22 @@ export default function BananaClassificationScreen() {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
       setResult(null);
+    }
+  };
+
+  // Function to get shelf life based on classification
+  const getShelfLife = (classification) => {
+    switch (classification.toLowerCase()) {
+      case "unripe":
+        return "4-6 days to become ripe.";
+      case "ripe":
+        return "3-4 days to become overripe.";
+      case "overripe":
+        return "Consume soon or use for baking.";
+      case "rotten":
+        return "Not edible.";
+      default:
+        return "Unknown shelf life.";
     }
   };
 
@@ -70,7 +86,17 @@ export default function BananaClassificationScreen() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setResult(response.data);
+      const predictedClass = response.data.predicted_class;
+      const confidence = response.data.confidence;
+
+      // Capitalize first letter
+      const formattedClass = predictedClass.charAt(0).toUpperCase() + predictedClass.slice(1);
+
+      setResult({
+        predicted_class: formattedClass,
+        confidence: (confidence * 100).toFixed(2) + "%",
+        shelf_life: getShelfLife(predictedClass),
+      });
     } catch (error) {
       Alert.alert("Error", "Failed to classify image. Check your server.");
     } finally {
@@ -98,7 +124,8 @@ export default function BananaClassificationScreen() {
           {result && (
             <View style={{ marginTop: 20 }}>
               <Text variant="titleMedium">Prediction: {result.predicted_class}</Text>
-              <Text variant="bodyLarge">Confidence: {(result.confidence * 100).toFixed(2)}%</Text>
+              <Text variant="bodyLarge">Confidence: {result.confidence}</Text>
+              <Text variant="bodyLarge">Shelf Life: {result.shelf_life}</Text>
             </View>
           )}
         </Card.Content>

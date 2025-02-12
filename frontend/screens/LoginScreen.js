@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       Alert.alert("Login successful!");
-      navigation.replace("HomeDrawer"); // ⬅️ Ensures no back navigation to login
+      navigation.replace("Main"); // ⬅️ Ensures no back navigation to login
     } catch (error) {
       let errorMessage = "Login failed. Please try again.";
       if (error.code === "auth/invalid-email") errorMessage = "Invalid email format.";
