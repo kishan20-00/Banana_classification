@@ -10,7 +10,7 @@ export default function NotificationScreen() {
   ]);
 
   return (
-    <View style={{ flex: 1, padding: 10 }}>
+    <View style={{ flex: 1, padding: 10, marginTop: 40 }}>
       <Text variant="headlineMedium" style={{ textAlign: "center", marginVertical: 10 }}>Notifications</Text>
       <FlatList
         data={notifications}

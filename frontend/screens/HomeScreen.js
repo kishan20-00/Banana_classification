@@ -3,9 +3,11 @@ import { View, TouchableOpacity, Image } from "react-native";
 import { Text, Card } from "react-native-paper";
 import { auth, db } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import { useLanguage } from "./LanguageContext"; // Import Language Context
 
 export default function HomeScreen({ navigation }) {
   const [userName, setUserName] = useState("");
+  const { language } = useLanguage(); // Get current language state
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -21,7 +23,7 @@ export default function HomeScreen({ navigation }) {
   }, []);
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#F8F8F8", padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#F8F8F8", padding: 20, marginTop: 40 }}>
       
       {/* Profile & Welcome Section */}
       <Card style={{ padding: 15, borderRadius: 10, marginBottom: 20 }}>
@@ -31,7 +33,15 @@ export default function HomeScreen({ navigation }) {
               source={require("../assets/Profile.jpg")} 
               style={{ width: 40, height: 40, borderRadius: 20, marginRight: 10 }} 
             />
-            <Text variant="titleMedium">Welcome, {userName || "User"}!</Text>
+            <Text 
+  variant="titleMedium" 
+  numberOfLines={1} 
+  adjustsFontSizeToFit 
+  style={{ flexWrap: "wrap", maxWidth: 250 }} // Ensures text wraps inside card
+>
+  {language === "en" ? "Welcome" : "සාදරයෙන් පිළිගනිමු"}, 
+  {userName || (language === "en" ? "User" : "පරිශීලක")}!
+</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
             <Image 
@@ -48,22 +58,30 @@ export default function HomeScreen({ navigation }) {
         {/* Feature Cards */}
         <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Banana")}>
           <Image source={require("../assets/banana.png")} style={styles.icon} />
-          <Text variant="titleSmall" style={styles.text}>Banana Ripeness Prediction</Text>
+          <Text variant="titleSmall" style={styles.text}>
+            {language === "en" ? "Banana Ripeness Prediction" : "කෙසෙල් පක්වත්වීම අනාවැකිය"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Irrigation")}>
           <Image source={require("../assets/irrigation.png")} style={styles.icon} />
-          <Text variant="titleSmall" style={styles.text}>Smart Irrigation System</Text>
+          <Text variant="titleSmall" style={styles.text}>
+            {language === "en" ? "Smart Irrigation System" : "ස්මාර්ට් ජල පෝෂණ පද්ධතිය"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Price")}>
           <Image source={require("../assets/price.png")} style={styles.icon} />
-          <Text variant="titleSmall" style={styles.text}>Price Prediction</Text>
+          <Text variant="titleSmall" style={styles.text}>
+            {language === "en" ? "Price Prediction" : "මිල අනාවැකිය"}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("Disease")}>
           <Image source={require("../assets/disease.png")} style={styles.icon} />
-          <Text variant="titleSmall" style={styles.text}>Disease Detection</Text>
+          <Text variant="titleSmall" style={styles.text}>
+            {language === "en" ? "Disease Detection" : "රෝග හඳුනා ගැනීම"}
+          </Text>
         </TouchableOpacity>
 
       </View>
@@ -75,6 +93,7 @@ export default function HomeScreen({ navigation }) {
 const styles = {
   card: {
     width: "48%",
+    height: "70%",
     backgroundColor: "white",
     borderRadius: 10,
     padding: 15,
@@ -89,10 +108,10 @@ const styles = {
   icon: {
     width: 50,
     height: 50,
-    marginBottom: 10,
+    marginTop: 40
   },
   text: {
     textAlign: "center",
+    marginTop: 20,
   }
 };
-
